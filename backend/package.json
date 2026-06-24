@@ -1,0 +1,18 @@
+{
+  "name": "celo-credentials-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "EIP-712 voucher issuance + gasless relayer + event indexer for the EducationCredential dApp on Celo.",
+  "scripts": {
+    "start": "node src/index.js",
+    "indexer": "node src/indexer.js",
+    "e2e": "node scripts/e2e.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "pg": "^8.13.0",
+    "viem": "^2.21.0"
+  }
+}

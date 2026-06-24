@@ -1,0 +1,22 @@
+# dependencies
+node_modules/
+
+# secrets / env
+.env
+.env.*
+!.env.example
+backend/.env
+frontend/.env.local
+
+# JS build output
+.next/
+out/
+dist/
+
+# Foundry build output
+cache/
+broadcast/
+
+# logs / OS
+*.log
+.DS_Store
