@@ -5,8 +5,8 @@ education credentials. An institution signs an **EIP-712 voucher** off-chain; a
 **relayer pays the gas**, so the student receives a verifiable, non-transferable
 credential **without holding any funds**. Anyone can verify a credential on-chain.
 
-> A compact, security-minded showcase: a clean contract with full test coverage,
-> a typed backend (issuer + relayer + indexer), and a Next.js frontend.
+> A compact, security-minded reference implementation: a Foundry-tested contract,
+> a JavaScript backend (issuer + relayer + indexer), and a TypeScript/Next.js frontend.
 
 ## Live on Celo Sepolia
 
@@ -50,6 +50,9 @@ sequenceDiagram
 8/8 Foundry tests cover minting, the soulbound revert, replay and expiry reverts,
 unauthorized signer, revocation paths, and a mint fuzz run.
 
+GitHub Actions checks the Solidity formatting, build, and test suite; validates the
+backend JavaScript syntax; and builds the TypeScript/Next.js frontend for production.
+
 ## Monorepo layout
 
 ```
@@ -70,7 +73,8 @@ forge test                                # 8/8 passing
 **Backend** (`backend/`)
 ```bash
 cp .env.example .env  # set ISSUER_PRIVATE_KEY, RELAYER_PRIVATE_KEY (DATABASE_URL optional)
-npm install
+npm ci
+npm run check         # static syntax validation
 npm run e2e           # live proof: sign -> relay -> mint -> verify on Celo Sepolia
 npm start             # API on :8130
 ```
@@ -78,7 +82,8 @@ npm start             # API on :8130
 **Frontend** (`frontend/`)
 ```bash
 cp .env.example .env.local
-npm install
+npm ci
+npm run build         # production build + TypeScript validation
 npm run dev           # http://localhost:3000
 ```
 
@@ -99,4 +104,4 @@ Next.js 14 · wagmi · TypeScript · Celo (EVM L2).
 
 ---
 
-*Testnet demo. Secrets in `.env` files are never committed. Not audited for production use.*
+*Testnet demo. Secrets in `.env` files are never committed. Not independently audited for production use.*
