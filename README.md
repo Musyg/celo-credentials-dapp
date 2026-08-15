@@ -17,6 +17,9 @@ credential **without holding any funds**. Anyone can verify a credential on-chai
 | Sample credential | [token #2](https://sepolia.celoscan.io/token/0x3Ed7b04b5B0dE9CaD355A229FE503C9e5711CdE0?a=2) |
 | Network | Celo Sepolia (chain id `11142220`) |
 
+> Deployment status: this address is the original v1 reference deployment. The current
+> source includes issuer-bound revocation authorization and is pending a new testnet deployment.
+
 ## How it works
 
 ```mermaid
@@ -43,12 +46,12 @@ sequenceDiagram
 - **Signature integrity** — OpenZeppelin `ECDSA` rejects malleable signatures; the
   recovered signer must be an authorized issuer.
 - **Authorization** — only owner-approved addresses (`setIssuer`) can issue; `revoke`
-  is restricted to issuer/owner.
+  is restricted to the owner or the active issuer that created the credential.
 - **Public verifiability** — `verifyCredential` returns holder, course, issuer and
   revocation status straight from chain state.
 
-8/8 Foundry tests cover minting, the soulbound revert, replay and expiry reverts,
-unauthorized signer, revocation paths, and a mint fuzz run.
+11/11 Foundry tests cover minting, the soulbound revert, replay and expiry reverts,
+unauthorized signer, issuer-bound revocation paths, and a mint fuzz run.
 
 GitHub Actions checks the Solidity formatting, build, and test suite; validates the
 backend JavaScript syntax; and builds the TypeScript/Next.js frontend for production.
@@ -67,7 +70,7 @@ backend JavaScript syntax; and builds the TypeScript/Next.js frontend for produc
 **Contracts**
 ```bash
 git submodule update --init --recursive   # forge-std + OpenZeppelin
-forge test                                # 8/8 passing
+forge test                                # 11/11 passing
 ```
 
 **Backend** (`backend/`)

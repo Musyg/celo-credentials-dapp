@@ -84,11 +84,14 @@ contract EducationCredential is ERC721URIStorage, EIP712, Ownable {
         emit CredentialIssued(tokenId, voucher.to, voucher.courseId, signer);
     }
 
-    /// @notice Revoke a credential (issuer or owner). Burns the token and flags it.
+    /// @notice Revoke a credential (active issuing signer or owner). Burns the token and flags it.
     function revoke(uint256 tokenId) external {
-        if (!isIssuer[msg.sender] && msg.sender != owner()) revert NotAuthorized();
-        if (_credentials[tokenId].issuer == address(0)) revert UnknownCredential();
-        _credentials[tokenId].revoked = true;
+        CredentialData storage credential = _credentials[tokenId];
+        if (credential.issuer == address(0)) revert UnknownCredential();
+        if (msg.sender != owner() && (msg.sender != credential.issuer || !isIssuer[msg.sender])) {
+            revert NotAuthorized();
+        }
+        credential.revoked = true;
         _burn(tokenId);
         emit CredentialRevoked(tokenId, msg.sender);
     }

@@ -95,6 +95,43 @@ contract EducationCredentialTest is Test {
         cred.revoke(id);
     }
 
+    function test_RevokeByDifferentAuthorizedIssuer_Reverts() public {
+        address otherIssuer = vm.addr(0xCAFE);
+        vm.prank(owner);
+        cred.setIssuer(otherIssuer, true);
+
+        EducationCredential.CredentialVoucher memory v = _voucher(student, 1, 6, block.timestamp + 1 days);
+        uint256 id = cred.mintWithVoucher(v, _sign(v, issuerPk));
+
+        vm.prank(otherIssuer);
+        vm.expectRevert(EducationCredential.NotAuthorized.selector);
+        cred.revoke(id);
+    }
+
+    function test_RevokeByOwner() public {
+        EducationCredential.CredentialVoucher memory v = _voucher(student, 1, 7, block.timestamp + 1 days);
+        uint256 id = cred.mintWithVoucher(v, _sign(v, issuerPk));
+
+        vm.prank(owner);
+        cred.revoke(id);
+
+        (address holder,,, bool revoked) = cred.verifyCredential(id);
+        assertEq(holder, address(0));
+        assertTrue(revoked);
+    }
+
+    function test_RevokeByDeauthorizedIssuingIssuer_Reverts() public {
+        EducationCredential.CredentialVoucher memory v = _voucher(student, 1, 8, block.timestamp + 1 days);
+        uint256 id = cred.mintWithVoucher(v, _sign(v, issuerPk));
+
+        vm.prank(owner);
+        cred.setIssuer(issuer, false);
+
+        vm.prank(issuer);
+        vm.expectRevert(EducationCredential.NotAuthorized.selector);
+        cred.revoke(id);
+    }
+
     function testFuzz_Mint(uint96 courseId, uint256 nonce) public {
         vm.assume(nonce != 0);
         EducationCredential.CredentialVoucher memory v = _voucher(student, courseId, nonce, block.timestamp + 1 days);
