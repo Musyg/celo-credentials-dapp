@@ -70,7 +70,7 @@ backend JavaScript syntax; and builds the TypeScript/Next.js frontend for produc
 **Contracts**
 ```bash
 git submodule update --init --recursive   # forge-std + OpenZeppelin
-forge test                                # 8/8 passing
+forge test                                # 11/11 passing
 ```
 
 **Backend** (`backend/`)
