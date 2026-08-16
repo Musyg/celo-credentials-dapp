@@ -35,7 +35,7 @@ export default function VerifyPage() {
           <div className="row"><span>Issuer</span><span>{data.issuer}</span></div>
           <div className="row"><span>Revoked</span><span>{String(data.revoked)}</span></div>
           <div className="row"><span>Token</span>
-            <a href={explorerToken(tokenId)} target="_blank">view on Celoscan</a></div>
+            <a href={explorerToken(tokenId)} target="_blank">view on Blockscout</a></div>
           <p className="muted" style={{ marginTop: 12 }}>
             Authentic if the issuer is your institution&apos;s key and revoked is false.</p>
         </div>

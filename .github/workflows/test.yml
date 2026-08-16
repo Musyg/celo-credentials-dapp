@@ -9,6 +9,23 @@ on:
   workflow_dispatch:
 
 jobs:
+  deployment-evidence:
+    name: Deployment evidence
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '20'
+
+      - name: Check deployment evidence
+        run: node scripts/check-deployment-evidence.mjs
+
   contracts:
     name: Contracts
     runs-on: ubuntu-latest
@@ -76,6 +93,9 @@ jobs:
 
       - name: Install dependencies
         run: npm ci --prefix frontend
+
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=low --prefix frontend
 
       - name: Build frontend
         run: npm run build --prefix frontend
