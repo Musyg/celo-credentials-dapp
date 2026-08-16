@@ -61,7 +61,7 @@ TypeScript/Next.js frontend for production.
 
 ```
 .
-├── src/ test/            Solidity contract + Foundry tests
+├── src/ test/ script/    Solidity contract, tests, and deployment script
 ├── backend/              Express API: voucher signing, gasless relay, Postgres indexer (viem)
 └── frontend/             Next.js (App Router) + wagmi: connect, mint, my credentials, verify
 ```
@@ -90,6 +90,41 @@ npm ci
 npm run build         # production build + TypeScript validation
 npm run dev           # http://localhost:3000
 ```
+
+## Redeploy the current contract
+
+The deployment script is locked to Celo Sepolia (`11142220`) and checks that the
+deployed owner matches `INITIAL_OWNER`. Keep the testnet deployer in an encrypted
+Foundry keystore. Never pass a private key on the command line or commit it to the
+repository.
+
+```powershell
+# One-time local setup. Both prompts are hidden.
+cast wallet import celo-sepolia-deployer --interactive
+
+$env:CELO_SEPOLIA_RPC_URL = "https://forno.celo-sepolia.celo-testnet.org"
+$env:INITIAL_OWNER = "0xYOUR_CELO_SEPOLIA_WALLET_ADDRESS"
+
+# Simulate first. This does not broadcast a transaction.
+forge script script/DeployEducationCredential.s.sol:DeployEducationCredential `
+  --rpc-url $env:CELO_SEPOLIA_RPC_URL `
+  --account celo-sepolia-deployer `
+  --sender $env:INITIAL_OWNER
+
+# Broadcast and submit the exact deployed source to Celo Sepolia Blockscout.
+forge script script/DeployEducationCredential.s.sol:DeployEducationCredential `
+  --rpc-url $env:CELO_SEPOLIA_RPC_URL `
+  --account celo-sepolia-deployer `
+  --sender $env:INITIAL_OWNER `
+  --broadcast `
+  --verify `
+  --verifier blockscout `
+  --verifier-url https://celo-sepolia.blockscout.com/api/
+```
+
+The account address used by `--sender` must match the imported keystore. After the
+broadcast, preserve the contract address, deployment transaction, verified source
+page, owner read-back, and the public issuance and revocation transactions.
 
 ## API
 
