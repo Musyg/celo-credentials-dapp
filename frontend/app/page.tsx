@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
-import { injected } from 'wagmi/connectors';
+import { injected } from 'wagmi/connectors/injected';
 import { API_BASE, explorerToken } from '@/lib/chain';
 
 export default function MintPage() {
@@ -70,7 +70,7 @@ export default function MintPage() {
       {result && (
         <div className="card">
           <div className="row"><span>Status</span><span>{result.status}</span></div>
-          <div className="row"><span>Tx</span><a href={result.explorer} target="_blank">view on Celoscan</a></div>
+          <div className="row"><span>Tx</span><a href={result.explorer} target="_blank">view on Blockscout</a></div>
           <p className="muted" style={{ marginTop: 12 }}>Token list updates on the
             &quot;My credentials&quot; page once the indexer picks up the event.</p>
         </div>

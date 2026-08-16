@@ -12,6 +12,7 @@ frontend/.env.local
 .next/
 out/
 dist/
+*.tsbuildinfo
 
 # Foundry build output
 cache/

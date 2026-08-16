@@ -82,7 +82,7 @@ async function main() {
   log('[verify] issuer  :', issuer);
   log('[verify] revoked :', revoked);
   log('[verify] matches student:', holder.toLowerCase() === student.toLowerCase());
-  log('\nToken on Celoscan:', explorerToken(tokenId));
+  log('\nToken on Blockscout:', explorerToken(tokenId));
   log('\nE2E OK - gasless credential minted + verified on Celo Sepolia.');
 }
 main().catch((e) => { console.error('E2E FAILED:', e.shortMessage || e.message); process.exit(1); });

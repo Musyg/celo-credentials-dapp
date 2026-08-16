@@ -1,6 +1,6 @@
 'use client';
 import { WagmiProvider, createConfig, http } from 'wagmi';
-import { injected } from 'wagmi/connectors';
+import { injected } from 'wagmi/connectors/injected';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { celoSepolia } from '@/lib/chain';
 

@@ -11,7 +11,7 @@ export const celoSepolia = defineChain({
   name: 'Celo Sepolia',
   nativeCurrency: { name: 'CELO', symbol: 'CELO', decimals: 18 },
   rpcUrls: { default: { http: [RPC_URL] } },
-  blockExplorers: { default: { name: 'Celoscan', url: 'https://sepolia.celoscan.io' } },
+  blockExplorers: { default: { name: 'Blockscout', url: 'https://celo-sepolia.blockscout.com' } },
   testnet: true,
 });
 
@@ -28,5 +28,5 @@ export const relayerWallet = relayerAccount
   ? createWalletClient({ account: relayerAccount, chain: celoSepolia, transport: http(RPC_URL) })
   : null;
 
-export function explorerTx(h) { return `https://sepolia.celoscan.io/tx/${h}`; }
-export function explorerToken(id) { return `https://sepolia.celoscan.io/token/${CONTRACT}?a=${id}`; }
+export function explorerTx(h) { return `https://celo-sepolia.blockscout.com/tx/${h}`; }
+export function explorerToken(id) { return `https://celo-sepolia.blockscout.com/token/${CONTRACT}/instance/${id}`; }

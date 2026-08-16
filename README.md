@@ -1,4 +1,4 @@
-# Celo Credentials — gasless soulbound education credentials
+# Celo Credentials: gasless soulbound education credentials
 
 A full-stack reference dApp on **Celo** (EVM L2) that issues **soulbound ERC-721**
 education credentials. An institution signs an **EIP-712 voucher** off-chain; a
@@ -12,13 +12,33 @@ credential **without holding any funds**. Anyone can verify a credential on-chai
 
 | | |
 |---|---|
-| Contract | [`0x3Ed7b04b5B0dE9CaD355A229FE503C9e5711CdE0`](https://sepolia.celoscan.io/address/0x3ed7b04b5b0de9cad355a229fe503c9e5711cde0#code) (verified source) |
-| Sample mint (gasless) | [tx `0x0069e4…ba14c`](https://sepolia.celoscan.io/tx/0x0069e47a4e84f2fa54103a815dca47f3c9f0133b63c1c9bf8dce61662f8ba14c) |
-| Sample credential | [token #2](https://sepolia.celoscan.io/token/0x3Ed7b04b5B0dE9CaD355A229FE503C9e5711CdE0?a=2) |
+| Contract | [`0xCE6A729c96C6c5f61d90E0139bCF929A777CCAC7`](https://celo-sepolia.blockscout.com/address/0xCE6A729c96C6c5f61d90E0139bCF929A777CCAC7) (fully verified source) |
+| Source | [`4522300`](https://github.com/Musyg/celo-credentials-dapp/commit/45223008a45c140780e8eb2d7c31dbdb79af33fe) |
+| Deployment | [tx `0x042a7a...43aa`](https://celo-sepolia.blockscout.com/tx/0x042a7a4a0a5d1db5bdb746c9120aed590ea571b7859eb06b9b875f1e90ee43aa) |
+| Issuer authorization | [tx `0x66a22a...020f`](https://celo-sepolia.blockscout.com/tx/0x66a22a351c4409d27680068a7bc04ffd51a51ba2e63454dce62600ca9411020f) |
+| Credential issuance | [tx `0xdf4e40...87e2`](https://celo-sepolia.blockscout.com/tx/0xdf4e4077b30adaecb6864f7122acf3fd496313944dac468ce36e9d5fa62387e2), token #1, course `20260816` |
+| Credential revocation | [tx `0xf85b12...4ee1`](https://celo-sepolia.blockscout.com/tx/0xf85b12f0bbed58d62ff5f12405f403a24d9bb1bb567dfe38971f0c60d5724ee1) |
+| Final public state | token #1: zero holder, original issuer retained, `revoked = true` |
 | Network | Celo Sepolia (chain id `11142220`) |
 
-> Deployment status: this address is the original v1 reference deployment. The current
-> source includes issuer-bound revocation authorization and is pending a new testnet deployment.
+The linked lifecycle demonstrates owner-controlled issuer authorization, EIP-712 voucher
+issuance, public verification, and revocation on the deployed source. The machine-readable
+record is in [`deployment-celo-sepolia.json`](deployment-celo-sepolia.json).
+
+The active and revoked states can be reproduced from public chain history:
+
+```powershell
+$rpc = "https://forno.celo-sepolia.celo-testnet.org"
+$contract = "0xCE6A729c96C6c5f61d90E0139bCF929A777CCAC7"
+
+# Active immediately after issuance.
+cast call $contract "verifyCredential(uint256)(address,uint256,address,bool)" 1 `
+  --block 33604321 --rpc-url $rpc
+
+# Revoked after the lifecycle proof.
+cast call $contract "verifyCredential(uint256)(address,uint256,address,bool)" 1 `
+  --block 33604915 --rpc-url $rpc
+```
 
 ## How it works
 
@@ -40,14 +60,14 @@ sequenceDiagram
 
 ## Security properties
 
-- **Soulbound** — transfers blocked in `_update`; only mint and burn (revoke) allowed.
-- **Replay protection** — each voucher carries a single-use `nonce` and a `deadline`,
+- **Soulbound:** transfers blocked in `_update`; only mint and burn (revoke) allowed.
+- **Replay protection:** each voucher carries a single-use `nonce` and a `deadline`,
   bound to the contract via the EIP-712 domain separator (chain id + verifying contract).
-- **Signature integrity** — OpenZeppelin `ECDSA` rejects malleable signatures; the
+- **Signature integrity:** OpenZeppelin `ECDSA` rejects malleable signatures; the
   recovered signer must be an authorized issuer.
-- **Authorization** — only owner-approved addresses (`setIssuer`) can issue; `revoke`
+- **Authorization:** only owner-approved addresses (`setIssuer`) can issue; `revoke`
   is restricted to the owner or the active issuer that created the credential.
-- **Public verifiability** — `verifyCredential` returns holder, course, issuer and
+- **Public verifiability:** `verifyCredential` returns holder, course, issuer and
   revocation status straight from chain state.
 
 11/11 Foundry tests cover minting, the soulbound revert, replay and expiry reverts,
@@ -139,7 +159,7 @@ page, owner read-back, and the public issuance and revocation transactions.
 ## Stack
 
 Solidity 0.8.x · OpenZeppelin v5 · Foundry · viem · Express · PostgreSQL ·
-Next.js 14 · wagmi · TypeScript · Celo (EVM L2).
+Next.js 16 · React 19 · wagmi 3 · TypeScript · Celo (EVM L2).
 
 ---
 
