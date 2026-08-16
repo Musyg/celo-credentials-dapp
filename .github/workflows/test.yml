@@ -50,6 +50,9 @@ jobs:
       - name: Install dependencies
         run: npm ci --prefix backend
 
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=low --prefix backend
+
       - name: Validate JavaScript
         run: npm run check --prefix backend
 
