@@ -54,7 +54,8 @@ sequenceDiagram
 unauthorized signer, issuer-bound revocation paths, and a mint fuzz run.
 
 GitHub Actions checks the Solidity formatting, build, and test suite; validates the
-backend JavaScript syntax; and builds the TypeScript/Next.js frontend for production.
+backend JavaScript syntax; audits production backend dependencies; and builds the
+TypeScript/Next.js frontend for production.
 
 ## Monorepo layout
 
